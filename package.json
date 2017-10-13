@@ -1,0 +1,22 @@
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "description": "A webserver in node.js for my ss server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wingoflan/nodejsWebserver.git"
+  },
+  "author": "wingoflan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wingoflan/nodejsWebserver/issues"
+  },
+  "homepage": "https://github.com/wingoflan/nodejsWebserver#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
