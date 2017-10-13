@@ -5,7 +5,7 @@ let express = require('express'),
 app.use(express.static('static'));
 
 app.get('*', function (req, res) {
-  res.send('index.html');
+  res.redirect('/');
 });
 
 app.listen(3000, function () {
