@@ -7,17 +7,19 @@ let console = require('./modules/console');
 process.on('message', function (msg) {
   if (msg === 'start') {
     let express = require('express'),
+      fs = require('fs'),
       app = express();
 
     //设置静态资源目录
     app.use(express.static('static'));
 
     app.all('*', function (req, res, next) {
-      console.log('todo: check auth');
+      //check auth
       next();
     });
 
     app.get('/nothing', function (req, res) {
+      fs.readdir('fas');
       res.send('you\'ve get nothing!');
     });
 
@@ -47,14 +49,20 @@ process.on('message', function (msg) {
     process.on('exit', function () {
       process.send('shutdown_success');
     });
-    process.exit();
+    process.exit(200);
   }
 
   else if(msg === 'restart'){
     process.on('exit', function () {
       process.send('request_restart');
     });
-    process.exit();
+    process.exit(200);
   }
 
+});
+
+process.on('exit', function (code) {
+  if(code != 200){
+    process.send('unexpected_exit');
+  }
 });

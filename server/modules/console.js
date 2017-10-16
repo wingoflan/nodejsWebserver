@@ -15,12 +15,23 @@ function prefix() {
 
 var Console = {
   log: function () {
-    var msg = prefix();
     var args = Array.from(arguments);
-    args.forEach(function (str) {
-      msg = msg + ' ' + str.toString();
-    });
-    console.log(msg);
+    if(typeof arguments[0] === 'boolean'){
+      if(!arguments[0]){
+        let noPrefixMsg = '';
+        args.splice(0,1);
+        args.forEach(function (str) {
+          noPrefixMsg = noPrefixMsg + ' ' + str.toString();
+        });
+        console.log(noPrefixMsg);
+      }
+    }else{
+      var msg = prefix();
+      args.forEach(function (str) {
+        msg = msg + ' ' + str.toString();
+      });
+      console.log(msg);
+    }
   }
 };
 
