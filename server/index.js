@@ -1,13 +1,30 @@
-let express = require('express'),
-  app = express();
+let cp = require('child_process'),
+  console = require('./modules/console');
 
-//设置静态资源目录
-app.use(express.static('static'));
+let server = cp.fork('server.js');
+server.send('start');
 
-app.get('*', function (req, res) {
-  res.redirect('/');
-});
+server.on('message', function (msg) {
 
-app.listen(3000, function () {
-  console.log('server running at 3000!');
+  if(msg === 'restart'){
+    server.send('restart');
+    console.log('request restart');
+  }
+
+  else if(msg === 'shutdown'){
+    server.send('shutdown');
+    console.log('request shutdown');
+  }
+
+  else if(msg === 'shutdown_success'){
+    console.log('shutdown success');
+  }
+
+  else if(msg === 'request_restart'){
+    server = cp.fork('server.js');
+    server.send('start');
+  }
+
+  else console.log('unknown msg ' + msg);
+
 });
