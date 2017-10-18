@@ -3,7 +3,7 @@
  */
 
 let log4js = require('log4js'),
-  logger = log4js.getLogger('index');
+  logger = log4js.getLogger('server');
 
 //log4js config
 log4js.configure({
@@ -33,6 +33,7 @@ process.on('message', function (msg) {
       next();
     });
 
+    //接口
     app.get('/nothing', function (req, res) {
       res.send('you\'ve get nothing!');
     });
