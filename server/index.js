@@ -1,5 +1,21 @@
 let cp = require('child_process'),
-  console = require('./modules/console');
+  fs = require('fs'),
+  log4js = require('log4js'),
+  logger = log4js.getLogger('index');
+
+//log4js config
+log4js.configure({
+  appenders: {
+    logfile: {type: 'file', filename: '../log'},
+    out: {type: 'stdout'}
+  },
+  categories:{
+    default: {
+      appenders:['logfile', 'out'],
+      level: 'all'
+    }
+  }
+});
 
 //启动服务器进程
 let server = cp.fork('server.js');
@@ -10,16 +26,16 @@ server.on('message', function (msg) {
 
   if(msg === 'restart'){
     server.send('restart');
-    console.log('request restart');
+    logger.info('request restart');
   }
 
   else if(msg === 'shutdown'){
     server.send('shutdown');
-    console.log('request shutdown');
+    logger.info('request shutdown');
   }
 
   else if(msg === 'shutdown_success'){
-    console.log('shutdown success');
+    logger.info('shutdown success');
   }
 
   else if(msg === 'request_restart'){
@@ -30,9 +46,9 @@ server.on('message', function (msg) {
   else if(msg === 'unexpected_exit'){
     server = cp.fork('server.js');
     server.send('start');
-    console.log('server shutdown unexpected!!! restarting');
+    logger.error('server shutdown unexpected!!! restarting');
   }
 
-  else console.log('unknown msg:', msg);
+  else logger.warn('unknown msg:', msg);
 
 });

@@ -2,24 +2,38 @@
  * Created by wingoflan on 2017/10/16.
  */
 
-let console = require('./modules/console');
+let log4js = require('log4js'),
+  logger = log4js.getLogger('index');
+
+//log4js config
+log4js.configure({
+  appenders: {
+    logfile: {type: 'file', filename: '../log'},
+    out: {type: 'stdout'}
+  },
+  categories: {
+    default: {
+      appenders: ['logfile', 'out'],
+      level: 'all'
+    }
+  }
+});
 
 process.on('message', function (msg) {
   if (msg === 'start') {
     let express = require('express'),
-      fs = require('fs'),
       app = express();
 
     //设置静态资源目录
     app.use(express.static('static'));
 
+    //权限检测
     app.all('*', function (req, res, next) {
       //check auth
       next();
     });
 
     app.get('/nothing', function (req, res) {
-      fs.readdir('fas');
       res.send('you\'ve get nothing!');
     });
 
@@ -40,19 +54,22 @@ process.on('message', function (msg) {
       res.sendStatus(404);
     });
 
+    //启动服务器
     app.listen(3000, function () {
-      console.log('server running at 3000!');
+      logger.info('server running at 3000!');
     });
   }
 
-  else if(msg === 'shutdown'){
+  //关机指令
+  else if (msg === 'shutdown') {
     process.on('exit', function () {
       process.send('shutdown_success');
     });
     process.exit(200);
   }
 
-  else if(msg === 'restart'){
+  //重启指令
+  else if (msg === 'restart') {
     process.on('exit', function () {
       process.send('request_restart');
     });
@@ -61,8 +78,9 @@ process.on('message', function (msg) {
 
 });
 
+//处理意外宕机
 process.on('exit', function (code) {
-  if(code != 200){
+  if (code != 200) {
     process.send('unexpected_exit');
   }
 });

@@ -59,3 +59,9 @@ typings/
 
 #webstorm workspace dictionary
 .idea
+
+#test log
+log
+
+#ss config json for test
+shadowsocks.json
