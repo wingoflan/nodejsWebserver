@@ -3,17 +3,26 @@
  */
 
 let log4js = require('log4js'),
-  logger = log4js.getLogger('server');
+  logger = log4js.getLogger('server'),
+  reqLogger = log4js.getLogger('requestLog'),
+  exec = require('child_process').exec;
+
+let ssManagerRouter = require('./router/ss-manager');
 
 //log4js config
 log4js.configure({
   appenders: {
     logfile: {type: 'file', filename: '../log'},
-    out: {type: 'stdout'}
+    out: {type: 'stdout'},
+    requestLog: {type: 'file', filename: '../reqLog'}
   },
   categories: {
     default: {
       appenders: ['logfile', 'out'],
+      level: 'all'
+    },
+    requestLog: {
+      appenders: ['requestLog'],
       level: 'all'
     }
   }
@@ -25,30 +34,29 @@ process.on('message', function (msg) {
       app = express();
 
     //设置静态资源目录
-    app.use(express.static('static'));
+    // app.use(express.static('static'));
+    let sendFileOpt = {
+      root: 'static/'
+    };
 
-    //权限检测
+    //全请求入口
     app.all('*', function (req, res, next) {
-      //check auth
+      //记录请求
+      reqLogger.info(JSON.stringify({
+        ip: req.ip,
+        url: req.url,
+        headers: req.headers,
+      }));
       next();
     });
 
-    //接口
-    app.get('/nothing', function (req, res) {
-      res.send('you\'ve get nothing!');
+    //首页
+    app.get('/', function (req, res) {
+      res.sendFile('index.html', sendFileOpt)
     });
 
-    //关机
-    app.get('/shutdown', function (req, res) {
-      res.send('指令已发出');
-      process.send('shutdown');
-    });
-
-    //重启
-    app.get('/restart', function (req, res) {
-      res.send('指令已发出');
-      process.send('restart');
-    });
+    //分配路由
+    app.use('/ss-manager', ssManagerRouter);
 
     //404
     app.get('*', function (req, res) {

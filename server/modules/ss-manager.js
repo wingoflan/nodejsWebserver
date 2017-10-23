@@ -1,6 +1,7 @@
 //shadowsocks manager
 
 let nodemailer = require('nodemailer'),
+  fs = require('fs'),
   log4js = require('log4js'),
   logger = log4js.getLogger('ss-manager');
 
@@ -57,17 +58,24 @@ let mail = function(idArr) {
 };
 
 //获取用户信息
-let getUserConfig = function () {
-
+let get = function () {
+  return JSON.parse(fs.readFileSync('user/user.json', 'utf-8'));
 };
 
-//设置用户信息
-let setUser = function () {
+//新增用户
+let add = function (data, cb) {
+  let err = null;
+  cb(err);
+};
 
+//修改用户信息
+let update = function (data, cb) {
+  let err = null;
+  cb(err);
 };
 
 //删除用户信息
-let deleteUser = function () {
+let remove = function () {
   //不删?
 };
 
@@ -76,6 +84,16 @@ let generatessjson = function () {
 
 };
 
+//检测余额状态
+let checkRemain = function () {
+
+};
+
 module.exports = {
-  mail: mail
+  mail: mail,
+  add: add,
+  update: update,
+  remove: remove,
+  get: get,
+  checkRemain: checkRemain
 };

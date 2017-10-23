@@ -1,0 +1,14 @@
+{
+  "lastPort": 15558,
+  "user": [
+    {
+      "id": 0,
+      "name": "test",
+      "port": 15535,
+      "password": "testlimit",
+      "free": true,
+      "remain": 0,
+      "start_date": false
+    }
+  ]
+}
