@@ -62,7 +62,9 @@ typings/
 
 #test log
 log
-reqLog
 
 #ss config json for test
 shadowsocks.json
+
+#test.js
+test.js

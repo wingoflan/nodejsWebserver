@@ -6,6 +6,50 @@
   <title></title>
 </head>
 <body>
-ss-manager
+添加用户
+<form id="addUser" onsubmit="return false">
+  <input type="text" placeholder="name" name="name"><br>
+  <input type="text" placeholder="password" name="password"><br>
+  free:
+  <input type="radio" placeholder="free" name="free" value="1" checked> true
+  <input type="radio" placeholder="free" name="free" value="0"> false <br>
+  <input type="text" placeholder="remain" name="remain"> <br>
+  <input type="submit">
+</form>
 </body>
+<script src="../lib/jquery.min.js"></script>
+<script>
+  $('#addUser').submit(function () {
+    let form = this;
+    let checkArr = ['name', 'password', 'remain'], check = true, waring = '以下未填：';
+    checkArr.forEach(function (key) {
+      if(!form[key].value){
+        check = false;
+        waring += ' ' + key
+      }
+    });
+    if (!check) {
+      alert(waring);
+    } else {
+      $.ajax({
+        url: '/ss-manager/addUser',
+        type: 'post',
+        data: {
+          name: form.name.value,
+          password: form.password.value,
+          free: form.free.value,
+          remain: Number(form.remain.value),
+          start_date: new Date()
+        },
+        success: function (res) {
+          console.log(res);
+          alert(res.code + ':' + res.msg);
+        },
+        fail: function (res) {
+          alert('出错啦');
+        }
+      })
+    }
+  })
+</script>
 </html>

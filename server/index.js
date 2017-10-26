@@ -1,27 +1,13 @@
 let cp = require('child_process'),
   fs = require('fs'),
-  log4js = require('log4js'),
-  logger = log4js.getLogger('index');
+  ss = require('./modules/ss-manager'),
+  logger = require('./modules/logger').log('index');
 
-//log4js config
-log4js.configure({
-  appenders: {
-    logfile: {type: 'file', filename: '../log'},
-    out: {type: 'stdout'}
-  },
-  categories: {
-    default: {
-      appenders: ['logfile', 'out'],
-      level: 'all'
-    }
-  }
-});
-
-//启动服务器进程
+//启动web服务器进程
 let server = cp.fork('server.js');
 server.send('start');
 
-//监听服务器进程事件
+//监听web服务器进程事件
 server.on('message', function (msg) {
 
   if (msg === 'restart') {
@@ -52,3 +38,6 @@ server.on('message', function (msg) {
   else logger.warn('unknown msg:', msg);
 
 });
+
+//检测ss服务器
+ss.init();

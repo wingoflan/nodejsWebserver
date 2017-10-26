@@ -9,7 +9,7 @@ let sendFileOpt = {
 };
 
 router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({extend:true}));
+router.use(bodyParser.urlencoded({extended:true}));
 
 router.get('/', function (req, res) {
   res.sendFile('index.html', sendFileOpt)
@@ -33,13 +33,14 @@ router.post('/updateUser', function (req, res) {
 });
 
 router.post('/addUser', function (req, res) {
-  let user = {};
-  manager.add(user, function (err) {
+  let user = req.body;
+  manager.add(user, function (err, code, msg) {
     if(err){
       res.sendStatus(500);
     } else {
       res.json({
-        opt: 200
+        opt: code,
+        msg: msg
       });
     }
   })

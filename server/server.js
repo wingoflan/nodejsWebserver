@@ -2,31 +2,11 @@
  * Created by wingoflan on 2017/10/16.
  */
 
-let log4js = require('log4js'),
-  logger = log4js.getLogger('server'),
-  reqLogger = log4js.getLogger('requestLog'),
+let logger = require('./modules/logger').log('server'),
+  reqLogger = require('./modules/logger').log('reqLog'),
   exec = require('child_process').exec;
 
 let ssManagerRouter = require('./router/ss-manager');
-
-//log4js config
-log4js.configure({
-  appenders: {
-    logfile: {type: 'file', filename: '../log'},
-    out: {type: 'stdout'},
-    requestLog: {type: 'file', filename: '../reqLog'}
-  },
-  categories: {
-    default: {
-      appenders: ['logfile', 'out'],
-      level: 'all'
-    },
-    requestLog: {
-      appenders: ['requestLog'],
-      level: 'all'
-    }
-  }
-});
 
 process.on('message', function (msg) {
   if (msg === 'start') {
@@ -34,7 +14,7 @@ process.on('message', function (msg) {
       app = express();
 
     //设置静态资源目录
-    // app.use(express.static('static'));
+    app.use(express.static('static'));
     let sendFileOpt = {
       root: 'static/'
     };

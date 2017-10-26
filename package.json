@@ -20,6 +20,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "log4js": "^2.3.7",
+    "node-schedule": "^1.2.5",
     "nodemailer": "^4.2.0"
   }
 }
