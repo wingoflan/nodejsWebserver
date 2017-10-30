@@ -16,17 +16,14 @@ router.get('/', function (req, res) {
 });
 
 router.get('/getUser', function (req, res) {
-  res.json(manager.get())
-});
-
-router.post('/updateUser', function (req, res) {
-  let user = {};
-  manager.update(user, function (err) {
+  manager.get(function (err, data) {
     if(err){
       res.sendStatus(500);
     } else {
       res.json({
-        opt: 200
+        code: 200,
+        msg: 'ok',
+        users: data.user
       })
     }
   })
@@ -39,9 +36,22 @@ router.post('/addUser', function (req, res) {
       res.sendStatus(500);
     } else {
       res.json({
-        opt: code,
+        code: code,
         msg: msg
       });
+    }
+  })
+});
+
+router.post('/updateUser', function (req, res) {
+  let user = {};
+  manager.update(user, function (err) {
+    if(err){
+      res.sendStatus(500);
+    } else {
+      res.json({
+        opt: 200
+      })
     }
   })
 });

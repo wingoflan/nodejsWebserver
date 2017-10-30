@@ -1,15 +1,15 @@
 {
-  "lastPort": 15558,
+  "lastPort": 15559,
   "user": [
     {
       "id": 0,
       "name": "test",
       "port": 15535,
       "password": "testlimit",
-      "free": false,
+      "free": true,
       "remain": 10,
       "start_date": "Mon Sep 22 2017 16:55:30 GMT+0800 (中国标准时间)",
-      "active": false
+      "active": true
     },
     {
       "id": 1,
@@ -49,6 +49,16 @@
       "start_date": "Mon Oct 23 2017 16:55:30 GMT+0800 (中国标准时间)",
       "id": 4,
       "port": 15558,
+      "active": true
+    },
+    {
+      "name": "testAdd",
+      "password": "testAdd",
+      "free": false,
+      "remain": 10,
+      "start_date": "Mon Oct 30 2017 14:36:34 GMT+0800 (中国标准时间)",
+      "id": 5,
+      "port": 15559,
       "active": true
     }
   ]
