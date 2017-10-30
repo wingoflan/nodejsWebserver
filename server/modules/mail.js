@@ -26,7 +26,7 @@ let sendMail = function (opt, cb) {
         from: '493157749@qq.com',
         to: to,
         subject: subject,
-        text: text
+        html: text
       }, function (err) {
         if (err) {
           cb(err);
