@@ -413,5 +413,6 @@ let updateUser = function (user, cb) {
 module.exports = {
   add: addUser,
   get: userConfig,
+  update: updateUser,
   init: init
 };
