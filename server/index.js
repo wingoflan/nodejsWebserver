@@ -1,6 +1,8 @@
 let cp = require('child_process'),
   fs = require('fs'),
+  schedule = require('node-schedule'),
   ss = require('./modules/ss-manager'),
+  traffic = require('./modules/ss-traffic'),
   logger = require('./modules/logger').log('index');
 
 //启动web服务器进程
@@ -39,5 +41,15 @@ server.on('message', function (msg) {
 
 });
 
-//检测ss服务器
+//初始化ss管理器
 ss.init();
+
+//ss流量记录
+let trafficRecord = schedule.scheduleJob('40 * * * *', function () {
+  traffic.list(function (err, result, detail) {
+    if(err) throw err;
+    traffic.log(result, function (err) {
+      if(err) throw err;
+    })
+  })
+});

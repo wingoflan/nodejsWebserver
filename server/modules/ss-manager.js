@@ -4,6 +4,7 @@ let nodemailer = require('nodemailer'),
   sche = require('node-schedule'),
   fs = require('fs'),
   exec = require('child_process').exec,
+  spawn = require('child_process').spawn,
   os = require('os'),
   async = require('async'),
   sendMail = require('../modules/mail'),
@@ -106,7 +107,7 @@ let init = function () {
 //获取用户信息
 //cb: err, data
 let userConfig = function (cb) {
-  fs.readFile('user/user.json', 'utf-8', function (err, data) {
+  fs.readFile('json/user.json', 'utf-8', function (err, data) {
     if (err) {
       cb(err);
     } else {
@@ -131,7 +132,7 @@ let ssConfig = function (cb) {
 //cb: err
 let setUserJson = function (data, cb) {
   data = JSON.stringify(data);
-  fs.writeFile('user/user.json', data, function (err) {
+  fs.writeFile('json/user.json', data, function (err) {
     if (err) {
       cb(err);
     } else {
@@ -157,20 +158,25 @@ let setSSJson = function (data, cb) {
 //cb: err
 let restartSS = function (cb) {
   if (os.platform() === 'linux') {
-    exec('/etc/init.d/shadowsocks restart', function (err, stdout, stderr) {
-      if (err) {
-        logger.error('重启ss服务失败！！');
-        logger.error(err);
-        cb(err);
-      } else {
-        if (stderr) {
-          cb(new Error(stderr));
-          logger.error(stderr);
-        } else {
-          cb(null);
-          logger.info(stdout);
-        }
+    let stderr = '', stdout = '';
+    let rs = spawn('/etc/init.d/shadowsocks', ['restart']);
+    rs.stderr.on('data', function (data) {
+      stderr += data;
+    });
+    rs.stdout.on('data', function (data) {
+      stdout += data;
+    });
+    rs.on('close', function (code, p2, p3, p4) {
+      logger.info('p2', p2);
+      if(code === 0){
+        logger.info('\nstdout:\n', stdout);
+        logger.info('\nstderr:\n', stderr);
+        logger.info('重启ss服务成功！');
+        cb(null);
       }
+    });
+    rs.on('error', function (err) {
+      cb(err);
     });
   } else {
     cb(new Error('Fail to restart shadowsocks: only linux platform is supported for now...'))
@@ -384,6 +390,7 @@ let addUser = function (data, cb) {
       if(os.platform() === 'linux'){
         restartSS(function (err) {
           if(err){
+            logger.error('Fail to restart SS service!');
             cb(err, 503, 'Fail to restart SS service.');
           } else {
             logger.info('Added new user:' + JSON.stringify(newUser));
@@ -398,9 +405,16 @@ let addUser = function (data, cb) {
     }
   ], function (err, code, msg) {
     if(err){
-      setSSJson(cacheSS);
-      setUserJson(cacheSS);
+      setSSJson(cacheSS, function (err) {
+        if(err) {logger.error('Fail to recover cached SS data:\n', cacheSS);}
+        logger.info('SS data recoverd:\n', cacheSS)
+      });
+      setUserJson(cacheUser, function (err) {
+        if(err) {logger.error('Fail to recover cached user data:\n', cacheUser);}
+        logger.info('User data recovered:\n', cacheUser);
+      });
       logger.error('Fail to add new user:' + JSON.stringify(cacheInput));
+      logger.error(err);
     }
     cb(err, code, msg);
   });

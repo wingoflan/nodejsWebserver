@@ -33,7 +33,10 @@ router.post('/addUser', function (req, res) {
   let user = req.body;
   manager.add(user, function (err, code, msg) {
     if(err){
-      res.sendStatus(500);
+      res.json({
+        code: code,
+        msg: msg
+      });
     } else {
       res.json({
         code: code,

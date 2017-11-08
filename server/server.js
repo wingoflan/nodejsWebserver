@@ -23,7 +23,6 @@ process.on('message', function (msg) {
     app.all('*', function (req, res, next) {
       //记录请求
       reqLogger.info(JSON.stringify({
-        ip: req.ip,
         url: req.url,
         headers: req.headers,
       }));
