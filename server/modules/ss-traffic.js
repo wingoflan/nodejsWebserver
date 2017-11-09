@@ -72,19 +72,40 @@ function listTraffic(cb) {
   });
 }
 
+function getTraffic(port, cb) {
+  fs.readFile('../log/traffic.json', 'utf-8', function (err, data) {
+    if(err){
+      cb(err);
+    }
+    else {
+      let json = JSON.parse(data), obj = {};
+      for(let ts in json){
+        for(let pt in json[ts]){
+          if(pt === port){
+            obj[ts] = json[ts][pt].bytes;
+          }
+        }
+      }
+      cb(null, obj);
+    }
+  })
+}
+
 module.exports = {
   list: listTraffic,
   log: function (result, cb) {
-    fs.readFile('json/traffic.json', function (err, data) {
+    fs.readFile('../log/traffic.json', function (err, data) {
       if(err) {cb(err);}
       else {
         let d = JSON.parse(data), now = Date.now();
         d[now] = result;
-        fs.writeFile('json/traffic.json', d, function (err) {
+        d = JSON.stringify(d);
+        fs.writeFile('../log/traffic.json', d, function (err) {
           if(err) throw err;
           logger.info('traffic logged at', now, ':', result);
         })
       }
     })
-  }
+  },
+  getTraffic: getTraffic
 };
