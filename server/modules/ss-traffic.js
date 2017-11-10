@@ -2,6 +2,7 @@ let exec = require('child_process').exec,
   logger = require('../modules/logger').log('traffic'),
   fs = require('fs');
 
+//获取所有流量信息
 function listTraffic(cb) {
   let detail = {}, result = {};
   exec('iptables -v -n -x -L', function (err, stdout, stderr) {
@@ -72,6 +73,7 @@ function listTraffic(cb) {
   });
 }
 
+//根据port获取流量信息
 function getTraffic(port, cb) {
   fs.readFile('../log/traffic.json', 'utf-8', function (err, data) {
     if(err){
