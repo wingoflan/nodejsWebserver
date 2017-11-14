@@ -104,7 +104,7 @@ module.exports = {
         d = JSON.stringify(d);
         fs.writeFile('../log/traffic.json', d, function (err) {
           if(err) throw err;
-          logger.info('traffic logged at', now, ':', result);
+          logger.info('traffic logged at', now, ':', JSON.stringify(result));
         })
       }
     })
