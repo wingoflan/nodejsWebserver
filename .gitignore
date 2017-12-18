@@ -66,5 +66,5 @@ log
 #ss config json for test
 shadowsocks.json
 
-#test.js
-test.js
+#test.*
+test.*
